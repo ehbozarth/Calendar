@@ -1,0 +1,18 @@
+<html>
+<body>
+
+<form action="create-event" method="post">
+    <input type="text" placeholder="Describe Event" name = "description"/>
+    <input type="datetime-local" value="{{now}}" name = "start_date"/>
+    <button type="submit">Submit</button>
+</form>
+<br>
+<br>
+<br>
+<br>
+{{#events}}
+{{description}} -- {{startDate}}<br>
+{{/events}}
+
+</body>
+</html>
