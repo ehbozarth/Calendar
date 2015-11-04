@@ -7,6 +7,14 @@
     <button type="submit">Submit</button>
 </form>
 <br>
+{{#isAsc}}
+<a href="/?isAsc=false">Show in Descending Order</a>
+{{/isAsc}}
+
+{{^isAsc}}
+<a href="/?isAsc=true">Show in Ascending Order</a>
+{{/isAsc}}
+
 <br>
 <br>
 <br>

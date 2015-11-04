@@ -22,9 +22,14 @@ public class Main {
         stmt.execute();
     }
 
-    public static ArrayList<Event> selectEvents (Connection conn) throws SQLException {
+    public static ArrayList<Event> selectEvents (Connection conn, boolean isAsc) throws SQLException {
         ArrayList<Event> events = new ArrayList<>();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM events");
+        String query = String.format("SELECT * FROM events ORDER BY start_date %s", isAsc ? "ASC" : "DESC");
+        //Ascending or DESC for descending
+        //Order by ASC if true
+        //Order by DESC if not true
+
+        PreparedStatement stmt = conn.prepareStatement(query);
         ResultSet results = stmt.executeQuery();
         while(results.next()){
             Event event = new Event();
@@ -36,8 +41,9 @@ public class Main {
         return events;
     }
 
-
-
+    public static ArrayList<Event> selectEvents(Connection conn) throws SQLException{
+        return selectEvents(conn, true);
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) throws SQLException {
@@ -47,9 +53,14 @@ public class Main {
         Spark.get(
                 "/",
                 ((request, response) -> {
+                    String isAscStr = request.queryParams("isAsc");
+                    //For when you first hit the page check for null
+                    boolean isAsc = isAscStr != null &&  isAscStr.equals("true");
+
                     HashMap m = new HashMap();
                     m.put("now", LocalDateTime.now());
-                    m.put("events", selectEvents(conn));
+                    m.put("events", selectEvents(conn, isAsc));
+                    m.put("isAsc", isAsc);
                     return new ModelAndView(m, "events.html");
                 }),
                 new MustacheTemplateEngine()
